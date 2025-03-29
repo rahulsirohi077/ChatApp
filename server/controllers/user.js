@@ -1,18 +1,19 @@
 import { compare } from "bcrypt";
 import { User } from "../models/user.js";
-import { sendToken } from "../utils/features.js";
+import { cookieOptions, sendToken } from "../utils/features.js";
+import { TryCatch } from "../middlewares/error.js";
+import { ErrorHandler } from "../utils/utility.js";
 
 // create a new user and save it to the database and save in cookie
 const newUser = async (req, res) => {
+  const { name, username, password, bio } = req.body;
 
-  const {name,username,password,bio} = req.body;
-  
   console.log(req.body);
 
   const avatar = {
     public_id: "Sdfsd",
-    url:"asdfd"
-  }
+    url: "asdfd",
+  };
 
   await User.create({
     name,
@@ -22,33 +23,56 @@ const newUser = async (req, res) => {
     avatar,
   });
 
-  sendToken(res,user,201,"User created successfully");
+  sendToken(res, user, 201, "User created successfully");
 };
 
-const login = async(req, res) => {
+// login user and save token in cookie
+const login = TryCatch(async (req, res, next) => {
 
-  const {username, password} = req.body;
+  const { username, password } = req.body;
 
-  const user = await User.findOne({username}).select("+password");
+  const user = await User.findOne({ username }).select("+password");
 
-  if(!user){
-    return res.status(400).json({
-      success: false,
-      message: "Invalid Username",
-    });
+  if (!user) {
+    return next(new ErrorHandler("Invalid Username or Password",404));
   }
 
   const isMatch = await compare(password, user.password);
 
-  if(!isMatch){
-    return res.status(400).json({
-      success: false,
-      message: "Invalid Password",
-    });
+  if (!isMatch) {
+    return next(new ErrorHandler("Invalid Password"));
   }
-  sendToken(res,user,200,`Welcome back, ${user.name}`);
-};
+  sendToken(res, user, 200, `Welcome back, ${user.name}`);
 
-const getMyProfile = async(req, res) => {};
+});
 
-export { login, newUser, getMyProfile };
+const getMyProfile = TryCatch(async(req, res) => {
+
+  const user = await User.findById(req.user).select("-password");
+  res.status(200).json({
+    success: true,
+    data: user,
+  });
+});
+
+const logout = TryCatch(async(req, res) => {
+  res.status(200).cookie("chatAppToken","",{...cookieOptions,maxAge:0}).json({
+    success: true,
+    message: "Logged out successfully",
+  });
+});
+
+const searchUser = (req,res)=>{
+
+  const {name} = req.query;
+
+
+
+  
+  res.status(200).json({
+    success: true,
+    message: name,
+  });
+}
+
+export { login, newUser, getMyProfile, logout, searchUser };
