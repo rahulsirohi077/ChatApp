@@ -1,6 +1,6 @@
 import { compare } from "bcrypt";
 import { User } from "../models/user.js";
-import { cookieOptions, emitEvent, sendToken } from "../utils/features.js";
+import { cookieOptions, emitEvent, sendToken, uploadFileToCloudinary } from "../utils/features.js";
 import { TryCatch } from "../middlewares/error.js";
 import { ErrorHandler } from "../utils/utility.js";
 import { Chat } from "../models/chat.js";
@@ -17,12 +17,14 @@ const newUser = TryCatch(async (req, res) => {
     return next(new ErrorHandler("Please upload an avatar", 400));
   }
 
+  const result = await uploadFileToCloudinary([file]);
+
   const avatar = {
-    public_id: "Sdfsd",
-    url: "asdfd",
+    public_id: result[0].public_id,
+    url: result[0].url,
   };
 
-  await User.create({
+  const user = await User.create({
     name,
     bio,
     username,
