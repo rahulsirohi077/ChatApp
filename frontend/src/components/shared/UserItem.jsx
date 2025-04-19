@@ -2,6 +2,7 @@ import { Add as AddIcon, Remove as RemoveIcon } from "@mui/icons-material";
 import { Avatar, IconButton, ListItem, Stack, Typography } from "@mui/material";
 import React from "react";
 import { memo } from "react";
+import { transFormImage } from "../../lib/feature";
 
 const UserItem = ({ user, handler, handlerIsLoading, isAdded = false, styling={} }) => {
   const { name, _id, avatar } = user;
@@ -15,7 +16,7 @@ const UserItem = ({ user, handler, handlerIsLoading, isAdded = false, styling={}
         width={"100%"}
         {...styling}
       >
-        <Avatar />
+        <Avatar src={transFormImage(avatar)}/>
 
         <Typography
           variant="body1"
