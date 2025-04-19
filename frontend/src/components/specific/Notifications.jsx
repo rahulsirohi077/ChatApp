@@ -9,26 +9,64 @@ import {
   List,
   ListItem,
   ListItemText,
+  Skeleton,
   Stack,
   TextField,
   Typography,
 } from "@mui/material";
 import { sampleNotifications } from "../../constants/sampleData";
 import { Add as AddIcon } from "@mui/icons-material";
+import { useAcceptFriendRequestMutation, useGetNotificationsQuery } from "../../redux/api/api";
+import { useErrors } from "../../hooks/hook";
+import { useDispatch, useSelector } from "react-redux";
+import { setIsNotification } from "../../redux/reducers/misc";
+import toast from "react-hot-toast";
 
 const Notifications = () => {
 
-  const friendReuestHandler = ({_id,accept}) => {
+  const {isNotification} = useSelector((state) => state.misc);
+  const {isLoading, data, error, isError} = useGetNotificationsQuery();
+
+  const dispatch = useDispatch();
+
+  const [acceptRequest] = useAcceptFriendRequestMutation();
+
+  const friendReuestHandler = async({_id,accept}) => {
+
+    dispatch(setIsNotification(false));
+
+    try {
+      const res = await acceptRequest({requestId:_id, accept});
+
+      if(res.data?.success) {
+        console.log("Use Socket here");
+        toast.success(res.data.message);
+      }
+      else{
+        toast.error(res.data?.error || "Something went wrong");
+      }
+    } catch (error) {
+      toast.error("Something went wrong");
+      console.log(error);
+    }
     
   };
 
+  const closeHandler = () => {
+    dispatch(setIsNotification(false));
+  }
+
+  useErrors([{isError, error}]);
+
   return (
-    <Dialog open>
+    <Dialog open={isNotification} onClose={closeHandler}>
       <Stack p={{ xs: "1rem", sm: "2rem" }} maxWidth={"25rem"}>
         <DialogTitle>Notifications</DialogTitle>
 
-        {sampleNotifications.length > 0 ? (
-          sampleNotifications.map(({ sender, _id }) => (
+        {
+          isLoading ? <Skeleton/> : (<>
+          {data?.allRequest.length > 0 ? (
+          data?.allRequest?.map(({ sender, _id }) => (
             <NotificationItem
               sender={sender}
               _id={_id}
@@ -39,6 +77,10 @@ const Notifications = () => {
         ) : (
           <Typography textAlign={"center"}>0 Notifications</Typography>
         )}
+          </>)
+        }
+
+        
       </Stack>
     </Dialog>
   );
@@ -54,7 +96,7 @@ const NotificationItem = memo(({ sender, _id, handler }) => {
         spacing={"1rem"}
         width={"100%"}
       >
-        <Avatar />
+        <Avatar src={avatar}/>
 
         <Typography
           variant="body1"

@@ -90,7 +90,7 @@ const Login = () => {
         formData,
         config
       );
-
+      
       dispatch(userExists(true));
       toast.success(data.message);
     } catch (error) {

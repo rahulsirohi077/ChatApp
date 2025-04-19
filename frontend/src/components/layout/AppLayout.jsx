@@ -9,6 +9,7 @@ import Title from "../shared/Title";
 import ChatList from "../specific/ChatList";
 import Profile from "../specific/Profile";
 import Header from "./Header";
+import { getSocket } from "../../socket";
 
 const AppLayout = () => (WrappedComponent) => {
   return (props) => {
@@ -17,6 +18,10 @@ const AppLayout = () => (WrappedComponent) => {
     // console.log("chatid = "+chatId);
 
     const dispatch = useDispatch();
+
+    const socket = getSocket();
+
+    console.log(socket.id);
 
     const {isMobile} = useSelector((state) => state.misc);
     const {user} = useSelector((state) => state.auth);
