@@ -20,8 +20,12 @@ const fileFormat = (url = "") => {
 };
 
 const transFormImage = (url = "",width = 100) => {
-  return url;
+  
+  const newUrl = url.replace("upload/", `upload/dpr_auto/w_${width}/`);
+
+  return newUrl;
 };
+
 
 const getLast7Days = () => {
   const currentDate = moment();

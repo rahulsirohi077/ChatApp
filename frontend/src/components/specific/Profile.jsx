@@ -19,7 +19,7 @@ const Profile = ({user}) => {
           marginBottom: "1rem",
           border: "5px solid white",
         }}
-        src={transFormImage(user?.avatar?.url)}
+        src={user?.avatar?.url}
       />
       <ProfileCard heading={"Bio"} text={user?.bio || "lorem ipsum haduqw"} />
       <ProfileCard heading={"Username"} text={user?.username} Icon={<UserNameIcon />} />

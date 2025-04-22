@@ -74,7 +74,7 @@ const AppLayout = () => (WrappedComponent) => {
             )}
           </Grid2>
           <Grid2 item size={{ xs: 12, sm: 8, md: 5, lg: 6 }} height={"100%"}>
-            <WrappedComponent {...props} />
+            <WrappedComponent {...props} socket={socket} chatId={chatId} user={user}/>
           </Grid2>
           <Grid2
             item
