@@ -3,7 +3,7 @@ import { Chat } from "../models/chat.js";
 import { deleteFilesFromCloudinary, emitEvent, uploadFileToCloudinary } from "../utils/features.js";
 import {
   ALERT,
-  NEW_ATTACHMENT,
+  NEW_MESSAGE,
   NEW_MESSAGE_ALERT,
   REFETCH_CHAT,
 } from "../constants/events.js";
@@ -244,7 +244,7 @@ const sendAttachment = TryCatch(async (req, res, next) => {
     return next(new ErrorHandler("Please provide attachment", 400));
   }
 
-  console.log("Printing Files",files);
+  // console.log("Printing Files",files);
   // Upload files to cloudinary
   const attachments = await uploadFileToCloudinary(files);
 
@@ -265,7 +265,7 @@ const sendAttachment = TryCatch(async (req, res, next) => {
 
   const message = await Message.create(messageForDb);
 
-  emitEvent(req, NEW_ATTACHMENT, chat.members, {
+  emitEvent(req, NEW_MESSAGE, chat.members, {
     message: messageForRealTime,
     chatId,
   });

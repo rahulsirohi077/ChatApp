@@ -34,8 +34,7 @@ const sendToken = (res, user, code, message) => {
 };
 
 const emitEvent = (req, event, users, data) => {
-  let io;
-  
+  const io = req.app.get("io");
   const usersSockets = getSockets(users);
   io.to(usersSockets).emit(event, data);
 };

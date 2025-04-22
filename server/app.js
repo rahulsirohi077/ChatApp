@@ -10,7 +10,7 @@ import cors from "cors";
 import { v2 as cloudinary } from "cloudinary";
 import { corsOptions } from "./constants/config.js";
 import { socketAuthenticator } from "./middlewares/auth.js";
-import { NEW_MESSAGE, NEW_MESSAGE_ALERT } from "./constants/events.js";
+import { NEW_MESSAGE, NEW_MESSAGE_ALERT, START_TYPING, STOP_TYPING } from "./constants/events.js";
 import { getSockets } from "./lib/helper.js";
 import { Message } from "./models/message.js";
 
@@ -43,6 +43,8 @@ const server = createServer(app);
 const io = new Server(server, {
   cors: corsOptions,
 });
+
+app.set("io",io);
 
 app.use(express.json());
 app.use(cookieParser());
@@ -101,6 +103,20 @@ io.on("connection", (socket) => {
     } catch (error) {
       console.log(error);
     }
+  });
+
+  socket.on(START_TYPING,({members,chatId})=>{
+
+    const membersSocket = getSockets(members);
+
+    socket.to(membersSocket).emit(START_TYPING,{chatId});
+  });
+
+  socket.on(STOP_TYPING,({members,chatId})=>{
+
+    const membersSocket = getSockets(members);
+
+    socket.to(membersSocket).emit(STOP_TYPING,{chatId});
   });
 
   socket.on("disconnect", () => {
