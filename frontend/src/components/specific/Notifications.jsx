@@ -1,26 +1,19 @@
-import React, { memo } from "react";
 import {
   Avatar,
   Button,
   Dialog,
   DialogTitle,
-  IconButton,
-  InputAdornment,
-  List,
   ListItem,
-  ListItemText,
   Skeleton,
   Stack,
-  TextField,
-  Typography,
+  Typography
 } from "@mui/material";
-import { sampleNotifications } from "../../constants/sampleData";
-import { Add as AddIcon } from "@mui/icons-material";
-import { useAcceptFriendRequestMutation, useGetNotificationsQuery } from "../../redux/api/api";
-import { useErrors } from "../../hooks/hook";
-import { useDispatch, useSelector } from "react-redux";
-import { setIsNotification } from "../../redux/reducers/misc";
+import React, { memo } from "react";
 import toast from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
+import { useErrors } from "../../hooks/hook";
+import { useAcceptFriendRequestMutation, useGetNotificationsQuery } from "../../redux/api/api";
+import { setIsNotification } from "../../redux/reducers/misc";
 
 const Notifications = () => {
 

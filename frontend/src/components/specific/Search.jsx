@@ -29,6 +29,7 @@ const Search = () => {
   const [users, setUsers] = useState([]);
 
   const addFriendHandler = async (id) => {
+    console.log(id);
     await sendFriendRequest("Sending Friend Request...", { userId:id })
   };
 
