@@ -32,7 +32,7 @@ const Notifications = () => {
       const res = await acceptRequest({requestId:_id, accept});
 
       if(res.data?.success) {
-        console.log("Use Socket here");
+  
         toast.success(res.data.message);
       }
       else{
