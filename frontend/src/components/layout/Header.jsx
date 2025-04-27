@@ -38,7 +38,7 @@ const Header = () => {
   const { isSearch, isNotification, isNewGroup } = useSelector((state) => state.misc);
   const { notificationCount } = useSelector((state) => state.chat);
 
-
+  
   const handleMobile = () => dispatch(setIsMobile(true));
 
   const openSearch = () => dispatch(setIsSearch(true));

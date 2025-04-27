@@ -29,14 +29,14 @@ const Search = () => {
   const [users, setUsers] = useState([]);
 
   const addFriendHandler = async (id) => {
-    console.log(id);
+    // console.log(id);
     await sendFriendRequest("Sending Friend Request...", { userId:id })
   };
 
   useEffect(() => {
     const timeOutId = setTimeout(() => {
       searchUser(search.value)
-        .then(({ data }) => setUsers(data.users))
+        .then(({ data }) => {setUsers(data.users)})
         .catch((err) => console.log(err));
     }, 1000);
     return () => clearTimeout(timeOutId);

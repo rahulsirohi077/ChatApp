@@ -274,9 +274,22 @@ const Login = () => {
                   fullWidth
                   label={"Password"}
                   variant="outlined"
-                  type={"password"}
+                  type={showPassword ? "text" : "password"}
                   value={password.value}
                   onChange={password.changeHandler}
+                  slotProps={{
+                    input: {
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            onClick={() => setShowPassword((prev) => !prev)}
+                          >
+                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    },
+                  }}
                 />
                 {password.error && (
                   <Typography color={"red"} variant="caption">

@@ -83,7 +83,7 @@ const searchUser = TryCatch(async (req, res) => {
   });
   // get all users from my chats means friends or people i have chatted with
   const allUsersFromMyChats = myChats.map((chat) => chat.members).flat();
-
+  
   // Finding all users except me and my friends
   const allUsersExceptMeAndFriends = await User.find({
     _id: { $nin: allUsersFromMyChats },
@@ -118,8 +118,8 @@ const sendFriendRequest = TryCatch(async (req, res, next) => {
     sender: req.user,
     receiver: userId,
   });
-
-  emitEvent(req.user, NEW_REQUEST, [userId]);
+  
+  emitEvent(req, NEW_REQUEST, [userId]);
 
   res.status(200).json({
     success: true,

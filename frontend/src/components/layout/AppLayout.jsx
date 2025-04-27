@@ -10,7 +10,7 @@ import ChatList from "../specific/ChatList";
 import Profile from "../specific/Profile";
 import Header from "./Header";
 import { getSocket } from "../../socket";
-import { NEW_MESSAGE_ALERT, NEW_REQUEST, ONLINE_USERS, REFETCH_CHATS } from "../../constants/events";
+import { NEW_MESSAGE_ALERT, NEW_REQUEST, ONLINE_USERS, REFETCH_CHAT} from "../../constants/events";
 import { incrementNotification, setNewMessagesAlert } from "../../redux/reducers/chat";
 import { getOrSaveFromStorage } from "../../lib/feature";
 
@@ -25,7 +25,7 @@ const AppLayout = () => (WrappedComponent) => {
 
     const socket = getSocket();
 
-    console.log(socket.id);
+    // console.log(socket.id);
 
     const {isMobile} = useSelector((state) => state.misc);
     const {user} = useSelector((state) => state.auth);
@@ -36,7 +36,7 @@ const AppLayout = () => (WrappedComponent) => {
     useErrors([{isError, error}]);
 
     useEffect(() => {
-      getOrSaveFromStorage({ key: NEW_MESSAGE_ALERT, value: newMessagesAlert });
+      getOrSaveFromStorage({ key: NEW_MESSAGE_ALERT, value: newMessagesAlert});
     }, [newMessagesAlert]);
 
     const handleDeleteChat = (e, chatId, groupChat) => {
@@ -45,10 +45,7 @@ const AppLayout = () => (WrappedComponent) => {
       deleteMenuAnchor.current = e.currentTarget;
     };
 
-    // const handleDeleteChat = (e, _id, groupChat) => {
-    //   e.preventDefault();
-    //   console.log("Delete chat ", _id, groupChat);
-    // };
+
 
     const handleMobileClose = () => dispatch(setIsMobile(false));
 
@@ -76,7 +73,7 @@ const AppLayout = () => (WrappedComponent) => {
     const eventHandlers = {
       [NEW_MESSAGE_ALERT]: newMessageAlertListener,
       [NEW_REQUEST]: newRequestListener,
-      [REFETCH_CHATS]: refetchListener,
+      [REFETCH_CHAT]: refetchListener,
       [ONLINE_USERS]: onlineUsersListener,
     };
 
