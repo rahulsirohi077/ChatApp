@@ -4,14 +4,12 @@ import {
   Done as DoneIcon,
   Edit as EditIcon,
   KeyboardBackspace as KeyboardBackspaceIcon,
-  Menu as MenuIcon,
-  Update,
+  Menu as MenuIcon
 } from "@mui/icons-material";
 import {
   Backdrop,
   Box,
   Button,
-  ButtonGroup,
   CircularProgress,
   Drawer,
   Grid2,
@@ -19,15 +17,17 @@ import {
   Stack,
   TextField,
   Tooltip,
-  Typography,
+  Typography
 } from "@mui/material";
-import { bgGradient, matBlack } from "../constants/color";
-import { useNavigate, useSearchParams } from "react-router-dom";
 import { lazy, memo, Suspense, useEffect, useState } from "react";
-import { Link } from "../components/styles/StyledComponents";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { LayoutLoader } from "../components/layout/Loaders";
 import AvatarCard from "../components/shared/AvatarCard";
-import { sampleChats, sampleUsers } from "../constants/sampleData";
 import UserItem from "../components/shared/UserItem";
+import { Link } from "../components/styles/StyledComponents";
+import { bgGradient, matBlack } from "../constants/color";
+import { useAsyncMutation, useErrors } from "../hooks/hook";
 import {
   useChatDetailsQuery,
   useDeleteChatMutation,
@@ -35,9 +35,6 @@ import {
   useRemoveGroupMemberMutation,
   useRenameGroupMutation,
 } from "../redux/api/api";
-import { useAsyncMutation, useErrors } from "../hooks/hook";
-import { useDispatch, useSelector } from "react-redux";
-import { LayoutLoader } from "../components/layout/Loaders";
 import { setIsAddMember } from "../redux/reducers/misc";
 
 const ConfirmDeleteDialog = lazy(() =>

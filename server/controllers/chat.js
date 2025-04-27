@@ -215,7 +215,7 @@ const leaveGroup = TryCatch(async (req, res, next) => {
 
   return res.status(200).json({
     success: true,
-    message: "Member removed successfully",
+    message: "Leave Group Successfully",
   });
 });
 
@@ -371,17 +371,17 @@ const deleteChat = TryCatch(async (req, res, next) => {
     attachments: { $exists: true, $ne: [] },
   });
 
-  const public_id = [];
+  const public_ids = [];
 
   messagesWithAttachments.forEach(({ attachments }) => {
     attachments.forEach(({ public_id }) => {
-      public_id.push(public_id);
+      public_ids.push(public_id);
     });
   });
 
   await Promise.all([
     // delete files from Cloudinary
-    deleteFilesFromCloudinary(public_id),
+    deleteFilesFromCloudinary(public_ids),
     chat.deleteOne(),
     Message.deleteMany({ chat: req.params.id }),
   ]);
