@@ -1,28 +1,37 @@
+import { useInputValidation } from "6pp";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 import {
-  Avatar,
   Button,
   Container,
   IconButton,
+  InputAdornment,
   Paper,
-  Stack,
   TextField,
-  Typography,
+  Typography
 } from "@mui/material";
-import { useInputValidation } from "6pp";
-import { bgGradient } from "../../constants/color";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
+import { bgGradient } from "../../constants/color";
+import { adminLogin, getAdmin } from "../../redux/thunks/admin";
 
-const isAdmin = true;
 
 const AdminLogin = () => {
-  const secretKey = useInputValidation("");
+  const { isAdmin } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
 
+  const secretKey = useInputValidation("");
+  const [showPassword, setShowPassword] = useState(false);
   const submitHandler = (e) => {
     e.preventDefault();
-    console.log("submit");
+    dispatch(adminLogin(secretKey.value));
   };
 
-  if(isAdmin) return <Navigate to={"/admin/dashboard"} />;
+  useEffect(() => {
+    dispatch(getAdmin());
+  }, [dispatch]);
+
+  if (isAdmin) return <Navigate to="/admin/dashboard" />;
 
   return (
     <div
@@ -61,11 +70,24 @@ const AdminLogin = () => {
               required
               fullWidth
               label={"Password"}
-              type="password"
+              type={showPassword ? "text" : "password"}
               variant="outlined"
               margin="normal"
               value={secretKey.value}
               onChange={secretKey.changeHandler}
+              slotProps={{
+                input: {
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={() => setShowPassword((prev) => !prev)}
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                },
+              }}
             />
 
             <Button

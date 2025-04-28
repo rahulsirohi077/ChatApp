@@ -60,7 +60,7 @@ const Chat = ({ chatId, user }) => {
     page,
     setPage,
     oldMessagesChunk.data?.messages,
-    true
+    true,
   );
 
   const errors = [

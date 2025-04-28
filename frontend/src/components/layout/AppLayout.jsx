@@ -1,5 +1,5 @@
 import { Drawer, Grid2, Skeleton } from "@mui/material";
-import React, { useCallback, useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { useErrors, useSocketEvents } from "../../hooks/hook";
@@ -28,6 +28,7 @@ const AppLayout = () => (WrappedComponent) => {
     const socket = getSocket();
 
     // console.log(socket.id);
+    const [onlineUsers, setOnlineUsers] = useState([]);
 
     const {isMobile} = useSelector((state) => state.misc);
     const {user} = useSelector((state) => state.auth);
@@ -100,6 +101,7 @@ const AppLayout = () => (WrappedComponent) => {
                 chatId={chatId}
                 handleDeleteChat={handleDeleteChat}
                 newMessagesAlert={newMessagesAlert}
+                onlineUsers={onlineUsers}
               />
           </Drawer>)
         }
@@ -121,6 +123,7 @@ const AppLayout = () => (WrappedComponent) => {
                 chatId={chatId}
                 handleDeleteChat={handleDeleteChat}
                 newMessagesAlert={newMessagesAlert}
+                onlineUsers={onlineUsers}
               />
             )}
           </Grid2>

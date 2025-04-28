@@ -2,9 +2,12 @@ import React, { useEffect, useState } from "react";
 import AdminLayout from "../../components/layout/AdminLayout";
 import Table from "../../components/shared/Table";
 import { dashboardData } from "../../constants/sampleData";
-import { Avatar, Stack } from "@mui/material";
+import { Avatar, Skeleton, Stack } from "@mui/material";
 import { transFormImage } from "../../lib/feature";
 import AvatarCard from "../../components/shared/AvatarCard";
+import { useFetchData } from "6pp";
+import { server } from "../../constants/config";
+import { useErrors } from "../../hooks/hook";
 
 const columns = [
   {
@@ -70,29 +73,46 @@ const columns = [
 ];
 
 const ChatManagement = () => {
+
+  const { loading, data, error } = useFetchData(
+    `${server}/api/v1/admin/chats`,
+    "dashboard-chats"
+  );
+  
+    useErrors([
+      {
+        isError: error,
+        error: error,
+      },
+    ]);
+
   const [rows, setRows] = useState([]);
 
   useEffect(() => {
-    setRows(
-      dashboardData.chats.map((user) => ({
-        id: user._id,
-        ...user,
-        avatar: user.avatar.map((avatar) => transFormImage(avatar, 50)),
-        members: user.members.map((member) =>
-          transFormImage(member.avatar, 50)
-        ),
-        creator: {
-          name: user.creator.name,
-          avatar: transFormImage(user.creator.avatar, 50),
-        },
-      }))
-    );
-  }, []);
+    if (data) {
+      setRows(
+        data.chats.map((i) => ({
+          ...i,
+          id: i._id,
+          avatar: i.avatar.map((i) => transFormImage(i, 50)),
+          members: i.members.map((i) => transFormImage(i.avatar, 50)),
+          creator: {
+            name: i.creator.name,
+            avatar: transFormImage(i.creator.avatar, 50),
+          },
+        }))
+      );
+    }
+  }, [data]);
 
   return (
     <AdminLayout>
+    {loading ? (
+      <Skeleton height={"100vh"} />
+    ) : (
       <Table heading={"All Chats"} columns={columns} rows={rows} />
-    </AdminLayout>
+    )}
+  </AdminLayout>
   );
 };
 

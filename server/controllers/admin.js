@@ -182,7 +182,7 @@ const getDashBoardStats = TryCatch(async (req, res) => {
 
   return res.status(200).json({
     success: true,
-    messages: stats,
+    stats,
   });
 });
 
