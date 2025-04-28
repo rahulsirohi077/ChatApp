@@ -3,6 +3,7 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import CameraAltIcon from "@mui/icons-material/CameraAlt";
 import {
   Avatar,
+  Box,
   Button,
   Container,
   IconButton,
@@ -22,14 +23,32 @@ import { server } from "../constants/config";
 import { userExists } from "../redux/reducers/auth";
 import { usernameValidator } from "../utils/validators";
 
+const generateCaptcha = () => {
+  const num1 = Math.floor(Math.random() * 10) + 1; // 1 to 10
+  const num2 = Math.floor(Math.random() * 10) + 1; // 1 to 10
+  return {
+    question: `What is ${num1} + ${num2}?`,
+    answer: num1 + num2,
+  };
+};
+
 const Login = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
+  const [captcha, setCaptcha] = useState(generateCaptcha());
+  const [captchaInput, setCaptchaInput] = useState("");
+
   const toggleLogin = () => {
     setIsLogin((prev) => !prev);
+    setCaptcha(generateCaptcha()); // New captcha when switching form
+    setCaptchaInput(""); // Reset answer field
   };
+
+  // const toggleLogin = () => {
+  //   setIsLogin((prev) => !prev);
+  // };
 
   const name = useInputValidation("");
   const bio = useInputValidation("");
@@ -42,6 +61,12 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    if (parseInt(captchaInput) !== captcha.answer) {
+      alert("Incorrect CAPTCHA answer. Please try again.");
+      setCaptcha(generateCaptcha());
+      setCaptchaInput("");
+      return;
+    }
 
     const toastId = toast.loading("Logging In...");
 
@@ -64,10 +89,12 @@ const Login = () => {
       );
 
       dispatch(userExists(data.user));
-      toast.success(data.message,{id: toastId});
+      toast.success(data.message, { id: toastId });
     } catch (error) {
       // console.log(error);
-      toast.error(error?.response?.data?.message || "Something went wrong!",{id: toastId});
+      toast.error(error?.response?.data?.message || "Something went wrong!", {
+        id: toastId,
+      });
     } finally {
       setIsLoading(false);
     }
@@ -75,6 +102,12 @@ const Login = () => {
 
   const handleSignUp = async (e) => {
     e.preventDefault();
+    if (parseInt(captchaInput) !== captcha.answer) {
+      alert("Incorrect CAPTCHA answer. Please try again.");
+      setCaptcha(generateCaptcha());
+      setCaptchaInput("");
+      return;
+    }
 
     const toastId = toast.loading("Signing Up...");
     setIsLoading(true);
@@ -101,10 +134,12 @@ const Login = () => {
       );
 
       dispatch(userExists(data.user));
-      toast.success(data.message,{id: toastId});
+      toast.success(data.message, { id: toastId });
     } catch (error) {
       // console.log(error);
-      toast.error(error?.response?.data?.message || "Something went wrong!",{id: toastId});
+      toast.error(error?.response?.data?.message || "Something went wrong!", {
+        id: toastId,
+      });
     } finally {
       setIsLoading(false);
     }
@@ -177,6 +212,19 @@ const Login = () => {
                     },
                   }}
                 />
+
+                <Typography textAlign={"center"} mt={2}>
+                  {captcha.question}
+                </Typography>
+                <TextField
+                  margin="normal"
+                  required
+                  fullWidth
+                  label="Your Answer"
+                  value={captchaInput}
+                  onChange={(e) => setCaptchaInput(e.target.value)}
+                />
+
                 <Button
                   sx={{ marginTop: "1rem" }}
                   variant="contained"
@@ -202,8 +250,22 @@ const Login = () => {
               </form>
             </>
           ) : (
-            <>
-              <Typography variant={"h5"}>Sign Up</Typography>
+            <Box
+              sx={{
+                height: "80vh",
+                overflowY: "scroll",
+                width: "100%",
+                padding: 2,
+              }}
+            >
+              <Typography
+                variant={"h5"}
+                sx={{
+                  textAlign: "center",
+                }}
+              >
+                Sign Up
+              </Typography>
               <form
                 style={{
                   width: "100%",
@@ -313,6 +375,19 @@ const Login = () => {
                     {password.error}
                   </Typography>
                 )}
+
+                <Typography textAlign={"center"} mt={2}>
+                  {captcha.question}
+                </Typography>
+                <TextField
+                  margin="normal"
+                  required
+                  fullWidth
+                  label="Your Answer"
+                  value={captchaInput}
+                  onChange={(e) => setCaptchaInput(e.target.value)}
+                />
+
                 <Button
                   sx={{ marginTop: "1rem" }}
                   variant="contained"
@@ -336,7 +411,7 @@ const Login = () => {
                   Log In Instead
                 </Button>
               </form>
-            </>
+            </Box>
           )}
         </Paper>
       </Container>
