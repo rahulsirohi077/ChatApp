@@ -1,3 +1,6 @@
+# DEMO
+:rocket: [Link to website][https://chat-app-frontend-one-cyan.vercel.app/]
+
 # 💬 ChatApp
 
 A real-time chat application built using the **MERN stack** (MongoDB, Express.js, React.js, Node.js) that allows users to chat with each other instantly.
